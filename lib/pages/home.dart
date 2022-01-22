@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:band_names/models/band.dart';
+import 'package:band_names/components/band_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,18 +22,74 @@ class _HomePageState extends State<HomePage> {
     Band(id: '5', name: 'Led Zeppelin', votes: 0),
   ];
 
-  // Method for Render the Circles with the Band Names
-  ListTile _bandTile(Band band) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(band.name.substring(0, 2)),
-        backgroundColor: Colors.blue[100],
-      ),
-      title: Text(band.name),
-      trailing:
-          Text(band.votes.toString(), style: const TextStyle(fontSize: 20)),
-      onTap: () => {print(band.name)},
-    );
+  void _addNewBand() {
+    final _textEditingController =
+        TextEditingController(); // Object for managed the text input
+    const _dialogAddTitle = 'Add new band';
+    const _dialogAddButtonText = 'Add';
+    const _dialogDeleteButtonText = 'Dismiss';
+
+    if (Platform.isAndroid) {
+      //? Android Dialog
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(_dialogAddTitle),
+          // Text Filed for add information
+          content: TextField(
+            controller: _textEditingController,
+            autofocus: true,
+            keyboardType: TextInputType.text,
+          ),
+          actions: [
+            MaterialButton(
+              child: const Text(_dialogAddButtonText),
+              elevation: 5,
+              textColor: Colors.blue,
+              onPressed: () => _addBandToList(_textEditingController.text),
+            )
+          ],
+        ),
+      );
+    } else {
+      //? iOS Dialog
+      showCupertinoDialog(
+          context: context,
+          builder: (_) {
+            return CupertinoAlertDialog(
+              title: const Text(_dialogAddTitle),
+              content: CupertinoTextField(
+                controller: _textEditingController,
+                autofocus: true,
+                keyboardType: TextInputType.text,
+              ),
+              actions: [
+                CupertinoDialogAction(
+                  child: const Text(_dialogAddButtonText),
+                  isDefaultAction: true, // Action for add by default
+                  onPressed: () => _addBandToList(_textEditingController.text),
+                ),
+                CupertinoDialogAction(
+                  child: const Text(_dialogDeleteButtonText),
+                  isDestructiveAction: true, // Action for destruct the dialog
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            );
+          });
+    }
+  }
+
+  void _addBandToList(String name) {
+    if (name.length > 3) {
+      setState(() {
+        _bands.add(Band(
+            id: DateTime.now().toString(),
+            name: name,
+            votes: Random().nextInt(10))); // 0-9 Random number
+      });
+    }
+    Navigator.pop(context);
   }
 
   @override
@@ -44,11 +105,11 @@ class _HomePageState extends State<HomePage> {
       body: ListView.builder(
           //* It is important to add the length of the list rendered
           itemCount: _bands.length,
-          itemBuilder: (context, index) => _bandTile(_bands[index])),
+          itemBuilder: (context, index) => BandTile(band: _bands[index])),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         elevation: 1,
-        onPressed: () {},
+        onPressed: _addNewBand,
       ),
     );
   }
