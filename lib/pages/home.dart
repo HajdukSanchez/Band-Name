@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   void _addNewBand() {
     // Object for managed the text input
     final _textEditingController = TextEditingController();
-    const _dialogAddTitle = 'Add new band';
+    const _dialogAddTitle = 'Add Band';
     const _dialogAddButtonText = 'Add';
     const _dialogDeleteButtonText = 'Dismiss';
 
@@ -37,13 +37,16 @@ class _HomePageState extends State<HomePage> {
           title: const Text(_dialogAddTitle),
           // Text Filed for add information
           content: TextField(
-            controller: _textEditingController,
-            autofocus: true,
-            keyboardType: TextInputType.text,
-          ),
+              controller: _textEditingController,
+              autofocus: true,
+              keyboardType: TextInputType.text,
+              style: const TextStyle(fontSize: 20)),
           actions: [
             MaterialButton(
-              child: const Text(_dialogAddButtonText),
+              child: Text(
+                _dialogAddButtonText.toUpperCase(),
+                style: const TextStyle(fontSize: 16),
+              ),
               elevation: 5,
               textColor: Colors.blue,
               onPressed: () => _addBandToList(_textEditingController.text),
@@ -97,7 +100,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'BandNames',
+          'Bands',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
