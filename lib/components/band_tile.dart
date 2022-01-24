@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import 'package:band_names/models/band.dart';
 
 class BandTile extends StatelessWidget {
@@ -10,6 +8,7 @@ class BandTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //* This Widget create and horizontal scrroll for make and action like delete a list member
     return Dismissible(
         key: Key(band.id),
         direction: DismissDirection.startToEnd, // Only one direction allowed

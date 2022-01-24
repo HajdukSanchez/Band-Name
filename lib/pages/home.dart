@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _addNewBand() {
-    final _textEditingController =
-        TextEditingController(); // Object for managed the text input
+    // Object for managed the text input
+    final _textEditingController = TextEditingController();
     const _dialogAddTitle = 'Add new band';
     const _dialogAddButtonText = 'Add';
     const _dialogDeleteButtonText = 'Dismiss';
