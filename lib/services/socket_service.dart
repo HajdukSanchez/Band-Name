@@ -33,9 +33,15 @@ class SocketService with ChangeNotifier {
         _serverStatus = ServerStatus.Online; // Update the status
         notifyListeners(); // Tell the UI to rebuild
       });
-      socket.on('dsconnect', (_) {
+
+      socket.on('disconnect', (_) {
         _serverStatus = ServerStatus.Offline; // Update the status
         notifyListeners(); // Tell the UI to rebuild
+      });
+
+      socket.on('message', (payload) {
+        print('Message ${payload}');
+        // notifyListeners(); // Tell the UI to rebuild
       });
     } catch (e) {
       throw Error();
