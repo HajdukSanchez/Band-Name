@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 enum ServerStatus {
   Online,
@@ -9,24 +9,36 @@ enum ServerStatus {
 
 // The changeNotifier tell the UI when he need to rebuild the interface
 class SocketService with ChangeNotifier {
-  final ServerStatus _serverStatus = ServerStatus.Connecting;
+  ServerStatus _serverStatus = ServerStatus.Connecting;
+
+  get serverStatus => _serverStatus;
 
   SocketService() {
-    _initConfig();
+    initState();
   }
 
-  void _initConfig() {
-    IO.Socket _socket = IO.io('http://localhost:3000', {
-      'tranports': ['websocket'],
-      'autoConnect': true
-    });
-    _socket.connect();
+  void initState() {
+    try {
+      Socket socket = io(
+        'http://localhost:2328',
+        OptionBuilder()
+            .setTransports(['webSocket'])
+            .enableAutoConnect()
+            .build(),
+      );
+      // Connect to WebSocket
+      socket.connect();
 
-    _socket.on('connect', (_) {
-      print('Connect');
-      _socket.emit('msg', 'Hello World');
-    });
-    _socket.on('event', (data) => print('Event: $data'));
-    _socket.onDisconnect((_) => print('Disconnect'));
+      socket.on('connect', (_) {
+        _serverStatus = ServerStatus.Online; // Update the status
+        notifyListeners(); // Tell the UI to rebuild
+      });
+      socket.on('dsconnect', (_) {
+        _serverStatus = ServerStatus.Offline; // Update the status
+        notifyListeners(); // Tell the UI to rebuild
+      });
+    } catch (e) {
+      throw Error();
+    }
   }
 }
