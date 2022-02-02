@@ -5,6 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:band_names/models/band.dart';
 import 'package:band_names/components/band_tile.dart';
+import 'package:band_names/components/status_icon.dart';
+import 'package:band_names/providers/socket_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:band_names/enums/server_status.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -97,6 +101,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final _socketProvider = Provider.of<SocketProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -104,6 +110,8 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
+        elevation: 1,
+        actions: [StatusIcon(isActive: _socketProvider.socket.connected)],
       ),
       body: ListView.builder(
           //* It is important to add the length of the list rendered

@@ -7,10 +7,10 @@ class StatusPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final socketProvider = Provider.of<SocketProvider>(context);
+    final _socketProvider = Provider.of<SocketProvider>(context);
 
     void emitMessage() {
-      socketProvider.emit('message', <String, dynamic>{
+      _socketProvider.emit('message', <String, dynamic>{
         'nombre': 'Flutter',
         'mensaje': 'Hola desde Flutter',
       });
@@ -21,7 +21,7 @@ class StatusPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('ServerStatus: ${socketProvider.serverStatus.name}')
+            Text('ServerStatus: ${_socketProvider.serverStatus.name}')
           ],
         ),
       ),
