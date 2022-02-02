@@ -30,7 +30,5 @@ class SocketProvider with ChangeNotifier {
       _serverStatus = ServerStatus.Offline;
       notifyListeners();
     });
-
-    _socket.on("bands", (data) => {print(data)});
   }
 }
