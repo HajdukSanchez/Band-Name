@@ -22,15 +22,15 @@ class SocketProvider with ChangeNotifier {
 
   void _initConfig() {
     _socket.onConnect((_) {
-      print("Connected");
       _serverStatus = ServerStatus.Online;
       notifyListeners();
     });
 
     _socket.onDisconnect((_) {
-      print("Disconnected");
       _serverStatus = ServerStatus.Offline;
       notifyListeners();
     });
+
+    _socket.on("bands", (data) => {print(data)});
   }
 }
