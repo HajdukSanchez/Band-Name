@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:band_names/components/chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:band_names/models/band.dart';
@@ -155,10 +156,22 @@ class _HomePageState extends State<HomePage> {
         elevation: 1,
         actions: [StatusIcon(isActive: isConnected)],
       ),
-      body: ListView.builder(
-          //* It is important to add the length of the list rendered
-          itemCount: _bands.length,
-          itemBuilder: (context, index) => BandTile(band: _bands[index])),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 20, bottom: 20, left: 10),
+            child: Chart(
+              data: _bands,
+            ),
+          ),
+          Expanded(
+              child: ListView.builder(
+                  //* It is important to add the length of the list rendered
+                  itemCount: _bands.length,
+                  itemBuilder: (context, index) =>
+                      BandTile(band: _bands[index])))
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         elevation: 1,
