@@ -12,11 +12,17 @@ class BandTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final _socketProvider = Provider.of<SocketProvider>(context, listen: false);
 
+    void _deleteBand() {
+      _socketProvider.emit('delete-band', {'id': band.id});
+    }
+
     //* This Widget create and horizontal scrroll for make and action like delete a list member
     return Dismissible(
         key: Key(band.id),
         direction: DismissDirection.startToEnd, // Only one direction allowed
-        onDismissed: (direction) {},
+        onDismissed: (direction) {
+          _deleteBand();
+        },
         // Element in the background
         background: Container(
           color: Colors.red,

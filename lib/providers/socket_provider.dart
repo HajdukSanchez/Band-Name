@@ -1,7 +1,6 @@
-import 'package:band_names/models/band.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:band_names/enums/server_status.dart';
+import 'package:band_names/enums/server_status.enum.dart';
 
 class SocketProvider with ChangeNotifier {
   ServerStatus _serverStatus = ServerStatus.Connecting;
