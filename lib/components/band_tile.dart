@@ -20,9 +20,7 @@ class BandTile extends StatelessWidget {
     return Dismissible(
         key: Key(band.id),
         direction: DismissDirection.startToEnd, // Only one direction allowed
-        onDismissed: (direction) {
-          _deleteBand();
-        },
+        onDismissed: (direction) => _deleteBand(),
         // Element in the background
         background: Container(
           color: Colors.red,

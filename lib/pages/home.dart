@@ -22,11 +22,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // Listen false only declare once the component and then not listen change any more
     final _socketProvider = Provider.of<SocketProvider>(context, listen: false);
-    _socketProvider.socket.on("bands", (data) {
-      _bands = (data as List).map((band) => Band.fromMap(band)).toList();
-      setState(() {});
-    });
+    _socketProvider.socket.on("bands", _handleActiveBands);
     super.initState();
+  }
+
+  _handleActiveBands(dynamic payload) {
+    _bands = (payload as List).map((band) => Band.fromMap(band)).toList();
+    setState(() {});
   }
 
   void _addBandDialogs() {
@@ -85,39 +87,37 @@ class _HomePageState extends State<HomePage> {
       //? iOS Dialog
       showCupertinoDialog(
           context: context,
-          builder: (_) {
-            return CupertinoAlertDialog(
-              title: const Text(_dialogAddTitle),
-              content: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  CupertinoTextField(
-                      controller: _textEditingControllerName,
-                      autofocus: true,
-                      keyboardType: TextInputType.text,
-                      style: const TextStyle(fontSize: 20)),
-                  CupertinoTextField(
-                      controller: _textEditingControllerVotes,
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(fontSize: 20)),
-                ],
-              ),
-              actions: [
-                CupertinoDialogAction(
-                  child: const Text(_dialogAddButtonText),
-                  isDefaultAction: true, // Action for add by default
-                  onPressed: () => _addBandToList(
-                      _textEditingControllerName.text,
-                      int.parse(_textEditingControllerVotes.text)),
+          builder: (_) => CupertinoAlertDialog(
+                title: const Text(_dialogAddTitle),
+                content: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    CupertinoTextField(
+                        controller: _textEditingControllerName,
+                        autofocus: true,
+                        keyboardType: TextInputType.text,
+                        style: const TextStyle(fontSize: 20)),
+                    CupertinoTextField(
+                        controller: _textEditingControllerVotes,
+                        keyboardType: TextInputType.number,
+                        style: const TextStyle(fontSize: 20)),
+                  ],
                 ),
-                CupertinoDialogAction(
-                  child: const Text(_dialogDeleteButtonText),
-                  isDestructiveAction: true, // Action for destruct the dialog
-                  onPressed: () => Navigator.pop(context),
-                )
-              ],
-            );
-          });
+                actions: [
+                  CupertinoDialogAction(
+                    child: const Text(_dialogAddButtonText),
+                    isDefaultAction: true, // Action for add by default
+                    onPressed: () => _addBandToList(
+                        _textEditingControllerName.text,
+                        int.parse(_textEditingControllerVotes.text)),
+                  ),
+                  CupertinoDialogAction(
+                    child: const Text(_dialogDeleteButtonText),
+                    isDestructiveAction: true, // Action for destruct the dialog
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ));
     }
   }
 
