@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:band_names/components/band_tile.dart';
 import 'package:band_names/components/status_icon.dart';
 import 'package:band_names/providers/socket_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:band_names/enums/server_status.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -33,10 +31,13 @@ class _HomePageState extends State<HomePage> {
 
   void _addBandDialogs() {
     // Object for managed the text input
-    final _textEditingController = TextEditingController();
-    const _dialogAddTitle = 'Add Band';
-    const _dialogAddButtonText = 'Add';
+    final _textEditingControllerName = TextEditingController();
+    final _textEditingControllerVotes = TextEditingController();
+    const _dialogAddTitle = 'New Band';
+    const _dialogAddButtonText = 'Add band';
     const _dialogDeleteButtonText = 'Dismiss';
+    const _placeHolderName = 'Band Name';
+    const _placeHolderVotes = 'Number of votes';
 
     if (Platform.isAndroid) {
       //? Android Dialog
@@ -45,21 +46,38 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => AlertDialog(
           title: const Text(_dialogAddTitle),
           // Text Filed for add information
-          content: TextField(
-              controller: _textEditingController,
-              autofocus: true,
-              keyboardType: TextInputType.text,
-              style: const TextStyle(fontSize: 20)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                  controller: _textEditingControllerName,
+                  autofocus: true,
+                  keyboardType: TextInputType.text,
+                  style: const TextStyle(fontSize: 20),
+                  decoration: InputDecoration(
+                    labelText: _placeHolderName,
+                    labelStyle: TextStyle(color: Colors.grey[350]),
+                  )),
+              TextField(
+                  controller: _textEditingControllerVotes,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(fontSize: 20),
+                  decoration: InputDecoration(
+                    labelText: _placeHolderVotes,
+                    labelStyle: TextStyle(color: Colors.grey[350]),
+                  )),
+            ],
+          ),
           actions: [
             MaterialButton(
-              child: Text(
-                _dialogAddButtonText.toUpperCase(),
-                style: const TextStyle(fontSize: 16),
-              ),
-              elevation: 5,
-              textColor: Colors.blue,
-              onPressed: () => _addBandToList(_textEditingController.text),
-            )
+                child: Text(
+                  _dialogAddButtonText.toUpperCase(),
+                  style: const TextStyle(fontSize: 16),
+                ),
+                elevation: 5,
+                textColor: Colors.blue,
+                onPressed: () => _addBandToList(_textEditingControllerName.text,
+                    int.parse(_textEditingControllerVotes.text)))
           ],
         ),
       );
@@ -70,16 +88,27 @@ class _HomePageState extends State<HomePage> {
           builder: (_) {
             return CupertinoAlertDialog(
               title: const Text(_dialogAddTitle),
-              content: CupertinoTextField(
-                controller: _textEditingController,
-                autofocus: true,
-                keyboardType: TextInputType.text,
+              content: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  CupertinoTextField(
+                      controller: _textEditingControllerName,
+                      autofocus: true,
+                      keyboardType: TextInputType.text,
+                      style: const TextStyle(fontSize: 20)),
+                  CupertinoTextField(
+                      controller: _textEditingControllerVotes,
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(fontSize: 20)),
+                ],
               ),
               actions: [
                 CupertinoDialogAction(
                   child: const Text(_dialogAddButtonText),
                   isDefaultAction: true, // Action for add by default
-                  onPressed: () => _addBandToList(_textEditingController.text),
+                  onPressed: () => _addBandToList(
+                      _textEditingControllerName.text,
+                      int.parse(_textEditingControllerVotes.text)),
                 ),
                 CupertinoDialogAction(
                   child: const Text(_dialogDeleteButtonText),
@@ -92,14 +121,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _addBandToList(String name) {
+  void _addBandToList(String name, int votes) {
+    final _socketProvider = Provider.of<SocketProvider>(context, listen: false);
     if (name.length > 3) {
-      setState(() {
-        _bands.add(Band(
-            id: DateTime.now().toString(),
-            name: name,
-            votes: Random().nextInt(10))); // 0-9 Random number
-      });
+      var newBand = {};
+      if (votes > 0) {
+        newBand = {
+          'name': name,
+          'votes': votes,
+        };
+      } else {
+        newBand = {
+          'name': name,
+        };
+      }
+      _socketProvider.socket.emit("add-band", newBand);
     }
     Navigator.pop(context);
   }
