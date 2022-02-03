@@ -18,30 +18,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Band> _bands = [
-    // Band(id: '1', name: 'Metallica', votes: 5),
-    // Band(id: '2', name: 'Queen', votes: 3),
-    // Band(id: '3', name: 'Iron Maiden', votes: 2),
-    // Band(id: '4', name: 'Deep Purple', votes: 1),
-    // Band(id: '5', name: 'Led Zeppelin', votes: 0),
-  ];
+  late List<Band> _bands = [];
 
   @override
   void initState() {
     // Listen false only declare once the component and then not listen change any more
     final _socketProvider = Provider.of<SocketProvider>(context, listen: false);
-    setState(() {
-      _socketProvider.socket.on(
-          "bands",
-          (data) => {
-                _bands =
-                    (data as List).map((band) => Band.fromMap(band)).toList()
-              });
+    _socketProvider.socket.on("bands", (data) {
+      _bands = (data as List).map((band) => Band.fromMap(band)).toList();
+      setState(() {});
     });
     super.initState();
   }
 
-  void _addNewBand() {
+  void _addBandDialogs() {
     // Object for managed the text input
     final _textEditingController = TextEditingController();
     const _dialogAddTitle = 'Add Band';
@@ -117,20 +107,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final _socketProvider = Provider.of<SocketProvider>(context);
-
-    bool _isConnected() {
-      return _socketProvider.socket.connected ? true : false;
-    }
+    bool isConnected = (_socketProvider.socket.connected) ? true : false;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Bands',
+          'Bands stats',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
         elevation: 1,
-        actions: [StatusIcon(isActive: _isConnected())],
+        actions: [StatusIcon(isActive: isConnected)],
       ),
       body: ListView.builder(
           //* It is important to add the length of the list rendered
@@ -139,7 +126,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         elevation: 1,
-        onPressed: _addNewBand,
+        onPressed: _addBandDialogs,
       ),
     );
   }

@@ -1,5 +1,7 @@
+import 'package:band_names/providers/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:band_names/models/band.dart';
+import 'package:provider/provider.dart';
 
 class BandTile extends StatelessWidget {
   final Band band;
@@ -8,6 +10,8 @@ class BandTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _socketProvider = Provider.of<SocketProvider>(context, listen: false);
+
     //* This Widget create and horizontal scrroll for make and action like delete a list member
     return Dismissible(
         key: Key(band.id),
@@ -31,7 +35,7 @@ class BandTile extends StatelessWidget {
           title: Text(band.name),
           trailing:
               Text(band.votes.toString(), style: const TextStyle(fontSize: 20)),
-          onTap: () => {print(band.name)},
+          onTap: () => _socketProvider.voteBand(band.id),
         ));
   }
 }

@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Material App',
+          title: 'Band names',
           initialRoute: "home",
           routes: {
             // Here we can create routes to move into the app like WEB

@@ -9,13 +9,6 @@ class StatusPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final _socketProvider = Provider.of<SocketProvider>(context);
 
-    void emitMessage() {
-      _socketProvider.emit('message', <String, dynamic>{
-        'nombre': 'Flutter',
-        'mensaje': 'Hola desde Flutter',
-      });
-    }
-
     return Scaffold(
       body: Center(
         child: Column(
@@ -26,7 +19,7 @@ class StatusPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: emitMessage, child: const Icon(Icons.message)),
+          onPressed: () {}, child: const Icon(Icons.message)),
     );
   }
 }
