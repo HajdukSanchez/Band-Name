@@ -5,7 +5,7 @@ import 'package:band_names/enums/server_status.enum.dart';
 class SocketProvider with ChangeNotifier {
   ServerStatus _serverStatus = ServerStatus.Connecting;
   final IO.Socket _socket = IO.io(
-      'http://192.168.20.21:3000/',
+      'https://socket-server-band-jhs.herokuapp.com/',
       IO.OptionBuilder()
           .setTransports(['websocket']) // for Flutter or Dart VM
           .enableAutoConnect()
